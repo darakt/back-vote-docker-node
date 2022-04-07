@@ -5,6 +5,7 @@ import "dotenv/config";
 import express from "express";
 import * as pg from "pg";
 import voteController from './vote/voteController.js';
+import cors from 'cors'
 
 const PORT = 8080;
 const HOST = '0.0.0.0';
@@ -16,8 +17,9 @@ const pool = new Pool({
 });
 
 const app = express();
+app.use(cors);
 
-  app.get("/", voteController.get2RandomCharacters);
+app.get("/", voteController.get2RandomCharacters);
 
 
 

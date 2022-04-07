@@ -15,12 +15,9 @@ export { missingNumbers };
 
 const randomNumber = (min, max, exept) => {
     let therandomNumber = -1;
-    let i = 0;
     while (therandomNumber === -1) {
-        console.log(i++);
         therandomNumber = Math.floor(Math.random() * (max - min) + min);
         if (exept.indexOf(therandomNumber) !== -1) {
-            console.log('the random number ', therandomNumber);
             therandomNumber = -1;
         }
     }
