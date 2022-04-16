@@ -1,15 +1,16 @@
 {
-  "name": "back-docker-node",
+  "name": "back-vote-docker-node",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon --experimental-modules  --es-module-specifier-resolution=node app.js",
+    "start": "nodemon --inspect=127.0.0.1:4000 --experimental-modules  --es-module-specifier-resolution=node app.js",
     "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@awaitjs/express": "^0.9.0",
     "@babel/core": "^7.17.9",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",
@@ -18,6 +19,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
+    "jest": "^27.5.1",
     "pg": "^8.7.3",
     "regenerator-runtime": "^0.13.9"
   },
