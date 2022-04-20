@@ -1,19 +1,24 @@
-import { pool } from "../config.js"; // default size is 10
-import { objectToArray, twoRandomNumber } from "../helpers.js";
-import voteService from './voteService.js'
+import * as pg from "pg";
+import { twoRandomNumbers } from "../helpers.js";
+import voteService from "./voteService.js";
+
+const { Pool } = pg.default;
+console.log("Pool  ", Pool);
+const connectionString = "postgresql://postgres:postgres@db:5432/postgres"; // TODO: no hardcoding use envar
+const pool = new Pool({
+  connectionString,
+});
 
 const voteController = {
   get2RandomCharacters: async (req, res) => {
     (async () => {
-      let client = await pool.connect();
       try {
-        const allIds = await voteService.getAllCandidatesIds();
-        let theIds = twoRandomNumber(allIds);
-        const twoCharacters = await voteService.getCandidatesById(theIds);
-        const theResult = voteService.manageError(twoCharacters);
-        return res.json(theResult);
-      } finally {
-        client.release();
+        const allIds = await voteService.getAllCandidatesIds(pool);
+        let theIds = twoRandomNumbers(allIds);
+        const twoCharacters = await voteService.getCandidatesById(theIds, pool);
+        return res.json(twoCharacters);
+      } catch (err) {
+        return res.json(err)
       }
     })().catch((err) => console.log(err.stack)); //should be logged
   },

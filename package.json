@@ -5,13 +5,14 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon --inspect=127.0.0.1:4000 --experimental-modules  --es-module-specifier-resolution=node app.js",
-    "test": "jest"
+    "test": " node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@awaitjs/express": "^0.9.0",
     "@babel/core": "^7.17.9",
+    "@babel/plugin-transform-modules-commonjs": "^7.17.9",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",
     "babel-jest": "^27.5.1",

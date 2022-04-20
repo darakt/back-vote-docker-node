@@ -1,8 +1,7 @@
-import { pool } from '../config.js'; // default size is 10
-import { twoRandomNumber } from '../helpers.js';
+import myError from "../myError";
 
 const voteService = {
-    getAllCandidatesIds: async () => {
+    getAllCandidatesIds: async (pool) => {
         let client;
         let ids;
         try {
@@ -11,14 +10,19 @@ const voteService = {
             const dirtyIds = psql.rows;
             ids = dirtyIds.map(({ id }) => id)
         } catch (err) {
-            console.log(err.stack); // should be logged
+            throw myError(
+                err.code,
+                err.messaage,
+                err.stack,
+                voteService.getAllCandidatesIds.name
+            );
         } finally {
             client.release();
         }
         return ids;
     },
-    getCandidatesById: async (ids) => {
-        let client
+    getCandidatesById: async (ids, pool) => {
+        let client  // TODO: add test for a more precise error
         try {
             let query = `SELECT * FROM characters where id=${ids[0]}`; // if ids = null catch will throw an error
             ids.shift();
@@ -30,15 +34,25 @@ const voteService = {
             return psql.rows;
         } catch (err) {
             console.log(err.stack);
+            throw myError(
+                err.code,
+                err.message,
+                err.stack,
+                voteService.getCandidatesById.name
+            );
         } finally {
             client.release();
         }
     },
     manageError: (data) => {
+        const err = {};
         if (data.length !== 2) {
-            return {
-                err: 'something went wrong'
-            }
+            throw myError(
+                err.code,
+                'something went wrong',
+                err.stack,
+                voteService.getAllCandidatesIds.name
+            );
         }
         return data;
     }
