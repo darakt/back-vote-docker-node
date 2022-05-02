@@ -13,7 +13,7 @@ const voteController = {
   get2RandomCharacters: async (req, res) => {
     (async () => {
       try {
-        const allIds = await voteService.getAllCandidatesIds(pool);
+        const allIds = await voteService.getAllTheCandidatesIds(pool);
         let theIds = twoRandomNumbers(allIds);
         const twoCharacters = await voteService.getCandidatesById(theIds, pool);
         return res.json(twoCharacters);

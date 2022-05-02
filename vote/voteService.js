@@ -1,7 +1,7 @@
 import myError from "../myError";
 
 const voteService = {
-    getAllCandidatesIds: async (pool) => {
+    getAllTheCandidatesIds: async (pool) => {
         let client;
         let ids;
         try {
@@ -10,11 +10,12 @@ const voteService = {
             const dirtyIds = psql.rows;
             ids = dirtyIds.map(({ id }) => id)
         } catch (err) {
+            console.log('err :',err.code)
             throw myError(
                 err.code,
                 err.messaage,
                 err.stack,
-                voteService.getAllCandidatesIds.name
+                voteService.getAllTheCandidatesIds.name
             );
         } finally {
             client.release();
@@ -30,32 +31,20 @@ const voteService = {
                 query = query.concat(` or id=${anId}`);
             });
             client = await pool.connect();
-            const psql = await client.query(query)
+            const psql = await client.query(query);
             return psql.rows;
         } catch (err) {
-            console.log(err.stack);
+            console.log(err.code);
             throw myError(
                 err.code,
                 err.message,
                 err.stack,
                 voteService.getCandidatesById.name
             );
-        } finally {
+        } finally { // How to test finally ?
             client.release();
         }
     },
-    manageError: (data) => {
-        const err = {};
-        if (data.length !== 2) {
-            throw myError(
-                err.code,
-                'something went wrong',
-                err.stack,
-                voteService.getAllCandidatesIds.name
-            );
-        }
-        return data;
-    }
 }
 
 export default voteService;
