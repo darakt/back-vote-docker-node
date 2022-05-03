@@ -1,12 +1,26 @@
 import myError from "../myError";
 
 const voteService = {
-    createAVote: async (pool, id, vote) => {
-
+    createAVote: async (id, candidate, pool) => {
+        let client, psql;
+        try {
+            client = await pool.connect();
+            psql = await client.query(`INSERT INTO votes(id_char, id_voter) VALUES (${candidate}, ${id})`);
+            console.log('psql', psql)
+        } catch (err) {
+            throw myError(
+                err.code,
+                err.messaage,
+                err.stack,
+                voteService.getAllTheCandidatesIds.name
+            );
+        } finally {
+            client.release();
+        }
+        return psql;
     },
     getAllTheCandidatesIds: async (pool) => {
-        let client;
-        let ids;
+        let client, ids;
         try {
             client = await pool.connect();
             let psql = await client.query("SELECT id FROM characters");

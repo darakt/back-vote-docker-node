@@ -28,10 +28,12 @@ INSERT INTO characters(id,name,pic,homeworld) VALUES (20,'Yoda','https://vignett
 INSERT INTO characters(id,name,pic,homeworld) VALUES (21,'Palpatine','https://vignette.wikia.nocookie.net/starwars/images/d/d8/Emperor_Sidious.png','naboo');
 
 CREATE TABLE users (
-    id INT PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     username VARCHAR(40) NOT NULL,
     password VARCHAR(50)
 );
+
+INSERT INTO users(username, password) VALUES ('Pum', 'ThisIsAPassword');
 
 CREATE TABLE tokens (
     value VARCHAR(200) PRIMARY KEY NOT NULL,
@@ -41,8 +43,8 @@ CREATE TABLE tokens (
 );
 
 CREATE TABLE votes ( -- change on this table impact the "organization" of the vote (eg: vote one or may times ?)
-    id INT PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     id_char INT REFERENCES charActers(id),
-    id_voter INT REFERENCES users(id),
+    id_voter INT REFERENCES users(id), -- UNIQUE
     created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )

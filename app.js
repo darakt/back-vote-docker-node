@@ -18,7 +18,7 @@ const pool = new Pool({
 });
 
 const app = express();
-app.get('/', express.json(), voteController.get2RandomCharacters) // dirty but wasn't working otherwise, TODO: improve
+app.get('/vote/', express.json(), voteController.get2RandomCharacters) // dirty but wasn't working otherwise, TODO: improve
 app.post('/vote/', express.json(), voteController.pick1Character)
 
 // app.use(router);
