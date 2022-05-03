@@ -1,6 +1,9 @@
 import myError from "../myError";
 
 const voteService = {
+    createAVote: async (pool, id, vote) => {
+
+    },
     getAllTheCandidatesIds: async (pool) => {
         let client;
         let ids;

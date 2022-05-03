@@ -11,17 +11,23 @@ const pool = new Pool({
 
 const voteController = {
   get2RandomCharacters: async (req, res) => {
-    (async () => {
-      try {
-        const allIds = await voteService.getAllTheCandidatesIds(pool);
-        let theIds = twoRandomNumbers(allIds);
-        const twoCharacters = await voteService.getCandidatesById(theIds, pool);
-        return res.json(twoCharacters);
-      } catch (err) {
-        return res.json(err)
-      }
-    })().catch((err) => console.log(err.stack)); //should be logged
-  },
+    try {
+      const allIds = await voteService.getAllTheCandidatesIds(pool);
+      let theIds = twoRandomNumbers(allIds);
+      const twoCharacters = await voteService.getCandidatesById(theIds, pool);
+      return res.json(twoCharacters);
+    } catch (err) {
+      return res.json(err)
+    }
+},
+  pick1Character: (req, res) => {
+    try {
+      console.log(req.body)
+      res.json({status: "has voted"})
+    } catch (err) {
+      return res.json(err)
+    }
+  }
 };
 
 export default voteController;

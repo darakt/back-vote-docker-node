@@ -26,3 +26,23 @@ INSERT INTO characters(id,name,pic,homeworld) VALUES (18,'Wedge Antilles','https
 INSERT INTO characters(id,name,pic,homeworld) VALUES (19,'Jek Tono Porkins','https://vignette.wikia.nocookie.net/starwars/images/e/eb/JekPorkins-DB.png','bestine');
 INSERT INTO characters(id,name,pic,homeworld) VALUES (20,'Yoda','https://vignette.wikia.nocookie.net/starwars/images/d/d6/Yoda_SWSB.png',NULL);
 INSERT INTO characters(id,name,pic,homeworld) VALUES (21,'Palpatine','https://vignette.wikia.nocookie.net/starwars/images/d/d8/Emperor_Sidious.png','naboo');
+
+CREATE TABLE users (
+    id INT PRIMARY KEY NOT NULL,
+    username VARCHAR(40) NOT NULL,
+    password VARCHAR(50)
+);
+
+CREATE TABLE tokens (
+    value VARCHAR(200) PRIMARY KEY NOT NULL,
+    created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expire_on TIMESTAMP NOT NULL,
+    id_user INT REFERENCES users(id)
+);
+
+CREATE TABLE votes ( -- change on this table impact the "organization" of the vote (eg: vote one or may times ?)
+    id INT PRIMARY KEY NOT NULL,
+    id_char INT REFERENCES charActers(id),
+    id_voter INT REFERENCES users(id),
+    created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+)
