@@ -15,18 +15,21 @@ const voteController = {
       const allIds = await voteService.getAllTheCandidatesIds(pool);
       let theIds = twoRandomNumbers(allIds);
       const twoCharacters = await voteService.getCandidatesById(theIds, pool);
-      const newToken = await tokenService.createToken(1, pool)
-      return res.json(twoCharacters);
+      const token = await tokenService.createToken(1, pool) //will change with auth
+      return res.json({ ...twoCharacters, token });
     } catch (err) {
       return res.json(err)
     }
 },
   pick1Character: async (req, res) => {
     try {
-      console.log(req.body)
-      let result = await voteService.createAVote(req.body.voter, req.body.voteFor, pool)
-      console.log('result :', result)
-      res.json({status: "has voted"})
+      let flag = await tokenService.validateToken(req.body.token, pool)
+      if (flag) {
+        let result = await voteService.createAVote(req.body.voter, req.body.voteFor, pool)
+        return res.json({ status: "has voted" })
+      }
+      // a log maybe ?
+      return res.status(403).json({ message: 'Invalid Token' })
     } catch (err) {
       return res.json(err)
     }

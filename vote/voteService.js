@@ -6,7 +6,10 @@ const voteService = {
         try {
             client = await pool.connect();
             psql = await client.query(`INSERT INTO votes(id_char, id_voter) VALUES (${candidate}, ${id})`);
-            console.log('psql', psql)
+            if (psql.oid === 0 && psql.rowCount === 1 && psql.command === 'INSERT') {
+                return {messaage: 'has voted'}
+            }
+            return {message: 'no vote'}
         } catch (err) {
             throw myError(
                 err.code,
@@ -17,7 +20,7 @@ const voteService = {
         } finally {
             client.release();
         }
-        return psql;
+        return res.json({message: 'nop'});
     },
     getAllTheCandidatesIds: async (pool) => {
         let client, ids;

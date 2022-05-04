@@ -10,7 +10,6 @@ const twoRandomNumbers = (numbers) => {
         second = Math.floor(Math.random() * numbers.length);
     }
     response = response.concat(numbers[second]);
-    console.log(response)
     if (response.length !== 2) {
         const err = {}
         Error.captureStackTrace(err);
