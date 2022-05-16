@@ -2,10 +2,11 @@ import myError from "../myError";
 
 const voteService = {
     createAVote: async (id, candidate, pool) => {
-        let client, psql;
         try {
-            client = await pool.connect();
-            psql = await client.query(`INSERT INTO votes(id_char, id_voter) VALUES (${candidate}, ${id})`);
+            let psql = await pool.query(
+                'INSERT INTO votes(id_char, id_voter) VALUES ($1, $2)',
+                [candidate, id]
+            );
             if (psql.oid === 0 && psql.rowCount === 1 && psql.command === 'INSERT') {
                 return {messaage: 'has voted'}
             }
@@ -17,16 +18,12 @@ const voteService = {
                 err.stack,
                 voteService.getAllTheCandidatesIds.name
             );
-        } finally {
-            client.release();
         }
-        return res.json({message: 'nop'});
     },
     getAllTheCandidatesIds: async (pool) => {
-        let client, ids;
+        let ids;
         try {
-            client = await pool.connect();
-            let psql = await client.query("SELECT id FROM characters");
+            let psql = await pool.query("SELECT id FROM characters");
             const dirtyIds = psql.rows;
             ids = dirtyIds.map(({ id }) => id)
         } catch (err) {
@@ -37,21 +34,16 @@ const voteService = {
                 err.stack,
                 voteService.getAllTheCandidatesIds.name
             );
-        } finally {
-            client.release();
         }
         return ids;
     },
     getCandidatesById: async (ids, pool) => {
-        let client  // TODO: add test for a more precise error
+        let psql;  // TODO: add test for a more precise error
         try {
-            let query = `SELECT * FROM characters where id=${ids[0]}`; // if ids = null catch will throw an error
-            ids.shift();
-            ids.map((anId) => {
-                query = query.concat(` or id=${anId}`);
-            });
-            client = await pool.connect();
-            const psql = await client.query(query);
+            let query = 'SELECT * FROM characters where id in '; // if ids = null catch will throw an error
+            if (ids.length === 1) query = query.concat("( $1 )");
+            else if (ids.length === 2) query = query.concat("( $1, $2 )");
+            psql = await pool.query(query, ids);
             return psql.rows;
         } catch (err) {
             console.log(err.code);
@@ -61,8 +53,6 @@ const voteService = {
                 err.stack,
                 voteService.getCandidatesById.name
             );
-        } finally { // How to test finally ?
-            client.release();
         }
     },
 }

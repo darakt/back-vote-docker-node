@@ -6,8 +6,9 @@ import tokenService from "../token/tokenService"
 const { Pool } = pg.default;
 const connectionString = "postgresql://postgres:postgres@db:5432/postgres"; // TODO: no hardcoding use envar
 const pool = new Pool({
-  connectionString,
+  connectionString: process.env.DATABASE_URL,
 });
+
 
 const voteController = {
   get2RandomCharacters: async (req, res) => {

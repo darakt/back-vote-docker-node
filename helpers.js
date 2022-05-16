@@ -1,4 +1,15 @@
 import myError from "./myError";
+import crypto from "crypto";
+
+const uuidv4 = () => {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+        (
+        c ^
+        (crypto.webcrypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+        ).toString(16)
+    );
+};
+
 
 const twoRandomNumbers = (numbers) => {
     let response = [];
@@ -6,7 +17,6 @@ const twoRandomNumbers = (numbers) => {
     response = response.concat(numbers[first]);
     let second = first;
     while (first === second) {
-
         second = Math.floor(Math.random() * numbers.length);
     }
     response = response.concat(numbers[second]);
@@ -23,6 +33,5 @@ const twoRandomNumbers = (numbers) => {
     return response;
 }
 
-const objectToArray = (anObject) => anObject.map(({ id }) => id);
 
-export { objectToArray, twoRandomNumbers }
+export { twoRandomNumbers, uuidv4}
