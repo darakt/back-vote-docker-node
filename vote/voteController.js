@@ -1,5 +1,5 @@
 import * as pg from "pg";
-import { twoRandomNumbers } from "../helpers.js";
+import { twoRandomNumbers } from "../helpers/helpers.js";
 import voteService from "./voteService.js";
 import tokenService from "../token/tokenService"
 
@@ -15,9 +15,17 @@ const voteController = {
     try {
       const allIds = await voteService.getAllTheCandidatesIds(pool);
       let theIds = twoRandomNumbers(allIds);
-      const twoCharacters = await voteService.getCandidatesById(theIds, pool);
+      const firstCharacter = await voteService.getACandidateById(
+        theIds[0],
+        pool
+      );
+      const secondCharacter = await voteService.getACandidateById(
+        theIds[1],
+        pool
+      );
+
       const token = await tokenService.createToken(1, pool) //will change with auth
-      return res.json({ ...twoCharacters, token });
+      return res.json({ characters: [...firstCharacter, ...secondCharacter], token });
     } catch (err) {
       return res.json(err)
     }

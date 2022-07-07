@@ -1,4 +1,4 @@
-import myError from "../myError";
+import {CustomError} from "../myError";
 
 const voteService = {
     createAVote: async (id, candidate, pool) => {
@@ -12,7 +12,7 @@ const voteService = {
             }
             return {message: 'no vote'}
         } catch (err) {
-            throw myError(
+            throw new CustomError(
                 err.code,
                 err.messaage,
                 err.stack,
@@ -28,7 +28,7 @@ const voteService = {
             ids = dirtyIds.map(({ id }) => id)
         } catch (err) {
             console.log('err :',err.code)
-            throw myError(
+            throw new CustomError(
                 err.code,
                 err.messaage,
                 err.stack,
@@ -37,21 +37,19 @@ const voteService = {
         }
         return ids;
     },
-    getCandidatesById: async (ids, pool) => {
+    getACandidateById: async (id, pool) => {
         let psql;  // TODO: add test for a more precise error
         try {
-            let query = 'SELECT * FROM characters where id in '; // if ids = null catch will throw an error
-            if (ids.length === 1) query = query.concat("( $1 )");
-            else if (ids.length === 2) query = query.concat("( $1, $2 )");
-            psql = await pool.query(query, ids);
+            let text = 'SELECT * FROM characters where id = $1';
+            psql = await pool.query(text, [id]);
             return psql.rows;
         } catch (err) {
             console.log(err.code);
-            throw myError(
+            throw new CustomError(
                 err.code,
                 err.message,
                 err.stack,
-                voteService.getCandidatesById.name
+                voteService.getACandidateById.name
             );
         }
     },
